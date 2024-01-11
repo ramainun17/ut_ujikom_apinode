@@ -249,6 +249,21 @@ exports.loginuser = function (req, res) {
     }
   );
 };
+//create loginpegawai
+exports.loginpegawai = function (req, res) {
+  let { email, password } = req.body;
+  connection.query(
+    "SELECT * FROM pegawais WHERE email = ? AND password = ?",
+    [email, password],
+    function (error, rows, fileds) {
+      if (error) {
+        console.log(error);
+      } else {
+        response.ok(rows, res);
+      }
+    }
+  );
+};
 //get order mobile
 exports.getordermobileid = function (req, res) {
   let id_user = req.params.id_user;

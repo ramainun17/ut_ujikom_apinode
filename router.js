@@ -31,6 +31,7 @@ module.exports = function (app) {
 
   //Login
   app.route("/api/v1/login").post(jsonku.loginuser);
+  app.route("/api/v2/login").post(jsonku.loginpegawai);
 
   //Mobile
   app.route("/api/Order/getMobile/:id_user").get(jsonku.getordermobileid);
