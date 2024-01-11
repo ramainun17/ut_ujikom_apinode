@@ -259,7 +259,13 @@ exports.loginpegawai = function (req, res) {
       if (error) {
         console.log(error);
       } else {
-        response.ok(rows, res);
+        if (rows.length === 0) {
+          // No data found
+          res.status(404).json({ message: "Data tidak ditemukan" });
+        } else {
+          // Data found, send the response
+          response.ok(rows, res);
+        }
       }
     }
   );
