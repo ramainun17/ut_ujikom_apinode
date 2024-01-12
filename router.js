@@ -1,4 +1,5 @@
 "use strict";
+const bcrypt = require("bcrypt");
 
 module.exports = function (app) {
   var jsonku = require("./controller");
@@ -32,7 +33,26 @@ module.exports = function (app) {
   //Login
   app.route("/api/v1/login").post(jsonku.loginuser);
   app.route("/api/v2/login").post(jsonku.loginpegawai);
+  app.route("/api/v3/login").post(jsonku.login);
 
   //Mobile
   app.route("/api/Order/getMobile/:id_user").get(jsonku.getordermobileid);
+
+  //uji coba
+  app.post("/cekPasswordHash", (req, res) => {
+    const { password, hash } = req.body;
+    const passwordHash = hash.replace(/^\$2y(.+)$/i, "$2a$1");
+
+    bcrypt.compare(password, passwordHash, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "error anj" });
+      }
+
+      if (result) {
+        return res.json({ success: true, message: "password cocok" });
+      } else {
+        return res.status(401).json({ error: "password tak cocok" });
+      }
+    });
+  });
 };

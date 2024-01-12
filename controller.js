@@ -1,4 +1,5 @@
 "use strict";
+const bcrypt = require("bcrypt");
 var response = require("./res");
 const connection = require("./connection");
 
@@ -245,6 +246,31 @@ exports.loginuser = function (req, res) {
         console.log(error);
       } else {
         response.ok(rows, res);
+      }
+    }
+  );
+};
+//create login
+exports.login = function (req, res) {
+  let { email, password } = req.body;
+  connection.query(
+    "SELECT * FROM users WHERE email = ?",
+    email,
+    function (error, rows, fileds) {
+      if (error) {
+        console.log(error);
+      } else {
+        const user = rows[0];
+        const passwordHash = password.replace(/^\$2y(.+)$/i, "$2a$1");
+        bcrypt.compare(user.password, passwordHash, (err, result) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ message: "Password salah, coba lagi" });
+          } else {
+            response.ok(rows, res);
+          }
+        });
       }
     }
   );
