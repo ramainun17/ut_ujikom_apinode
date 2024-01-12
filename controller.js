@@ -259,22 +259,29 @@ exports.login = function (req, res) {
     function (error, rows, fileds) {
       if (error) {
         console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
       } else {
-        const user = rows[0];
-        const passdb = user.password;
-        const passwordHash = passdb.replace(/^\$2y(.+)$/i, "$2a$1");
-        bcrypt.compare(password, passwordHash, (err, result) => {
-          if (err) {
-            console.log(error);
-          }
-          if(result){
-            response.ok(rows, res);
-          } else{
-            return res
-              .status(500)
-              .json({ message: "Password salah, coba lagi" });
-          }
-        });
+        if (rows.length === 0) {
+          return res.status(401).json({ message: 'Email dan password salah' });
+        }else{
+          const user = rows[0];
+          const passdb = user.password;
+          const passwordHash = passdb.replace(/^\$2y(.+)$/i, "$2a$1");
+          bcrypt.compare(password, passwordHash, (err, result) => {
+            if (err) {
+              console.log(error);
+              return res.status(500).json({ message: 'Internal Server Error' });
+            }
+            if(result){
+              response.ok(rows, res);
+            } else{
+              return res
+                .status(401)
+                .json({ message: "Password salah, coba lagi" });
+            }
+          });
+        }
+        
       }
     }
   );
