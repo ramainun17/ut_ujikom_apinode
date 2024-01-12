@@ -261,14 +261,18 @@ exports.login = function (req, res) {
         console.log(error);
       } else {
         const user = rows[0];
-        const passwordHash = password.replace(/^\$2y(.+)$/i, "$2a$1");
-        bcrypt.compare(user.password, passwordHash, (err, result) => {
+        const passdb = user.password;
+        const passwordHash = passdb.replace(/^\$2y(.+)$/i, "$2a$1");
+        bcrypt.compare(password, passwordHash, (err, result) => {
           if (err) {
+            console.log(error);
+          }
+          if(result){
+            response.ok(rows, res);
+          } else{
             return res
               .status(500)
               .json({ message: "Password salah, coba lagi" });
-          } else {
-            response.ok(rows, res);
           }
         });
       }
