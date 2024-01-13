@@ -226,7 +226,7 @@ exports.updatestatusorder = function (req, res) {
 
 //get all transaksi
 exports.gettransaksi = function (req, res) {
-  connection.query("SELECT * FROM transaksis", function (error, rows, fileds) {
+  connection.query("SELECT transaksis.id, transaksis.kode_transaksi, users.name, transaksis.total_harga, transaksis.status FROM transaksis JOIN orders ON transaksis.id_order = orders.id_order JOIN users ON orders.id_user = users.id ORDER BY transaksis.created_at DESC", function (error, rows, fileds) {
     if (error) {
       console.log(error);
     } else {
