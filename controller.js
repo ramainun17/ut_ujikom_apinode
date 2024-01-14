@@ -23,6 +23,21 @@ exports.getuser = function (req, res) {
     }
   });
 };
+//get user berdasarkan id
+exports.getuserbyid = function (req, res) {
+  let id = req.params.id;
+  connection.query(
+    "SELECT * FROM users WHERE id = ?",
+    [id],
+    function (error, rows, fileds) {
+      if (error) {
+        console.log(error);
+      } else {
+        response.ok(rows, res);
+      }
+    }
+  );
+};
 //get pegawai berdasarkan id
 exports.getpegawaibyid = function (req, res) {
   let id = req.params.id;
@@ -177,10 +192,10 @@ exports.getorder = function (req, res) {
     }
   });
 };
-//get id, name, telp, layanan, order
+//get id, name, telp, layanan, remember_token order
 exports.getorderspecial = function (req, res) {
   connection.query(
-    "SELECT orders.id_order, users.name, orders.nomor_telpon, layanans.nama_layanan, orders.status FROM orders JOIN layanans ON orders.id_layanan = layanans.id_layanan JOIN users ON orders.id_user = users.id;",
+    "SELECT orders.id_order, users.name, orders.nomor_telpon, layanans.nama_layanan, orders.status, users.remember_token FROM orders JOIN layanans ON orders.id_layanan = layanans.id_layanan JOIN users ON orders.id_user = users.id;",
     function (error, rows, fileds) {
       if (error) {
         console.log(error);
@@ -190,7 +205,7 @@ exports.getorderspecial = function (req, res) {
     }
   );
 };
-//get kendaraan berdasarkan id
+//get order berdasarkan id
 exports.getorderbyid = function (req, res) {
   let id_order = req.params.id_order;
   connection.query(
@@ -226,16 +241,19 @@ exports.updatestatusorder = function (req, res) {
 
 //get all transaksi
 exports.gettransaksi = function (req, res) {
-  connection.query("SELECT transaksis.id, transaksis.kode_transaksi, users.name, transaksis.total_harga, transaksis.status FROM transaksis JOIN orders ON transaksis.id_order = orders.id_order JOIN users ON orders.id_user = users.id ORDER BY transaksis.created_at DESC", function (error, rows, fileds) {
-    if (error) {
-      console.log(error);
-    } else {
-      response.ok(rows, res);
+  connection.query(
+    "SELECT transaksis.id, transaksis.kode_transaksi, users.name, transaksis.total_harga, transaksis.status FROM transaksis JOIN orders ON transaksis.id_order = orders.id_order JOIN users ON orders.id_user = users.id ORDER BY transaksis.created_at DESC",
+    function (error, rows, fileds) {
+      if (error) {
+        console.log(error);
+      } else {
+        response.ok(rows, res);
+      }
     }
-  });
+  );
 };
 
-//create loginuser
+// loginuser
 exports.loginuser = function (req, res) {
   let { email } = req.body;
   connection.query(
@@ -250,7 +268,7 @@ exports.loginuser = function (req, res) {
     }
   );
 };
-//create login
+// login mobile
 exports.login = function (req, res) {
   let { email, password } = req.body;
   connection.query(
@@ -259,29 +277,28 @@ exports.login = function (req, res) {
     function (error, rows, fileds) {
       if (error) {
         console.log(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+        return res.status(500).json({ message: "Internal Server Error" });
       } else {
         if (rows.length === 0) {
-          return res.status(401).json({ message: 'Email dan password salah' });
-        }else{
+          return res.status(401).json({ message: "Email dan password salah" });
+        } else {
           const user = rows[0];
           const passdb = user.password;
           const passwordHash = passdb.replace(/^\$2y(.+)$/i, "$2a$1");
           bcrypt.compare(password, passwordHash, (err, result) => {
             if (err) {
               console.log(error);
-              return res.status(500).json({ message: 'Internal Server Error' });
+              return res.status(500).json({ message: "Internal Server Error" });
             }
-            if(result){
+            if (result) {
               response.ok(rows, res);
-            } else{
+            } else {
               return res
                 .status(401)
                 .json({ message: "Password salah, coba lagi" });
             }
           });
         }
-        
       }
     }
   );
