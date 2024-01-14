@@ -26,6 +26,7 @@ module.exports = function (app) {
   app.route("/api/Order/getSpesial").get(jsonku.getorderspecial);
   app.route("/api/Order/get/:id_order").get(jsonku.getorderbyid);
   app.route("/api/Order/updateStatus/:id_order").put(jsonku.updatestatusorder);
+  app.route("/api/User/updateToken/:id").put(jsonku.updatetoken);
 
   //Transaksi
   app.route("/api/Transaksi/get").get(jsonku.gettransaksi);

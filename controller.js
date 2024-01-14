@@ -322,3 +322,22 @@ exports.getordermobileid = function (req, res) {
     }
   );
 };
+
+//update remember_token
+exports.updatetoken = function (req, res) {
+  let { remember_token } = req.body;
+  let id = req.params.id;
+  const updated_at = new Date();
+  const updatedData = { remember_token, updated_at };
+  connection.query(
+    "UPDATE users SET ? WHERE id = ?",
+    [updatedData, id],
+    function (error, rows, fileds) {
+      if (error) {
+        console.log(error);
+      } else {
+        response.ok("Data terupdate", res);
+      }
+    }
+  );
+};
