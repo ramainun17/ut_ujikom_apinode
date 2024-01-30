@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 const conn = mysql.createConnection({
-  host: "bny.h.filess.io",
-  user: "ujikom_battlepure",
-  password: "61fa5eedd1667ef7914793e005494ceffdebeb53",
-  database: "ujikom_battlepure",
-  port: 3307,
+  host: "sql6.freesqldatabase.com",
+  user: "sql6680712",
+  password: "vslvHp2q77",
+  database: "sql6680712",
+  port: 3306,
 });
 
 conn.connect((err) => {
